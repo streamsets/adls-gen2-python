@@ -1,0 +1,5 @@
+This product includes components of the following software:
+
+  Project Name                    License
+-----------------------------------------------------------------------
+  requests                        Apache License 2.0
