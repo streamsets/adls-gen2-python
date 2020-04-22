@@ -312,7 +312,7 @@ class ApiClient(metaclass=ABCMeta):
             An instance of :py:class:`downstage.filesystem_api.Command`
         """
         logger.debug('Updating path %s/%s...', filesystem_identifier, path)
-        params = get_params(parameters=locals(), exclusions=['self', 'filesystem_identifier', 'pat', 'data','headers'])
+        params = get_params(parameters=locals(), exclusions=['self', 'filesystem_identifier', 'pat', 'data', 'headers'])
         response = self._patch(endpoint='{}/{}'.format(filesystem_identifier, path),
                                params=params,
                                data=data,
@@ -459,7 +459,11 @@ class OAuth2AdlsApiClient(ApiClient):
         url = self._base_url if url is None else url
         if endpoint:
             url = join_url_parts(url, endpoint)
-        if data and not isinstance(data, str):
+        is_data_format_json = False
+        if headers and (headers.get('x-ms-content-type') in ['text/plain', 'application/json'] or
+                        headers.get('content-type') in ['text/plain', 'application/json']):
+            is_data_format_json = True
+        if data and is_data_format_json and not isinstance(data, str):
             data = json.dumps(data)
         logger.debug('Sending PATCH request with url=%s, headers=%s, params=%s', url, headers, params)
         response = self.session.patch(url, params=params or {}, data=data, headers=headers)
@@ -473,7 +477,11 @@ class OAuth2AdlsApiClient(ApiClient):
         url = self._base_url if url is None else url
         if endpoint:
             url = join_url_parts(url, endpoint)
-        if data and not isinstance(data, str):
+        is_data_format_json = False
+        if headers and (headers.get('x-ms-content-type') in ['text/plain', 'application/json'] or
+                        headers.get('content-type') in ['text/plain', 'application/json']):
+            is_data_format_json = True
+        if data and is_data_format_json and not isinstance(data, str):
             data = json.dumps(data)
         logger.debug('Sending POST request with url=%s, headers=%s, params=%s', url, headers, params)
         response = self.session.post(url, params=params or {}, data=data, files=files, headers=headers)
@@ -485,7 +493,11 @@ class OAuth2AdlsApiClient(ApiClient):
         url = self._base_url if url is None else url
         if endpoint:
             url = join_url_parts(url, endpoint)
-        if data and not isinstance(data, str):
+        is_data_format_json = False
+        if headers and (headers.get('x-ms-content-type') in ['text/plain', 'application/json'] or
+                        headers.get('content-type') in ['text/plain', 'application/json']):
+            is_data_format_json = True
+        if data and is_data_format_json and not isinstance(data, str):
             data = json.dumps(data)
         logger.debug('Sending PUT request with url=%s, headers=%s, params=%s', url, headers, params)
         response = self.session.put(url, params=params or {}, data=data, headers=headers)
